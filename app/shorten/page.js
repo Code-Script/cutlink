@@ -24,7 +24,10 @@ const Page = () => {
     };
 
     fetch("/api/generate", requestOptions)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) throw new Error("API request failed");
+        return response.json();
+      })
       .then((result) => {
         setGenerated(`${process.env.NEXT_PUBLIC_HOST}/${shorturl}`);
         seturl("");
