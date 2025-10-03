@@ -71,7 +71,7 @@ const Page = () => {
         <>
           <span className="font-bold text-lg">Your Link</span>{" "}
           <code>
-            <Link target="_blank" href={generated} className="hover:text-blue-500 hover:underline">
+            <Link target="_blank" href={generated} className="text-blue-600 hover:underline">
               {generated}
             </Link>
           </code>{" "}
