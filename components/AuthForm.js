@@ -8,6 +8,7 @@ export default function AuthForm({ mode }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSignup = mode === "signup";
@@ -41,7 +42,17 @@ export default function AuthForm({ mode }) {
       <p className="mt-2 text-sm leading-6 text-green-950/65">Sign in to save and revisit your shortened links.</p>
       <div className="mt-6 space-y-4">
         <input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Email address" className="w-full rounded-xl border border-green-100 bg-white px-4 py-3 outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/15" />
-        <input required minLength={8} type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password" className="w-full rounded-xl border border-green-100 bg-white px-4 py-3 outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/15" />
+        <div className="relative">
+          <input required minLength={8} type={isPasswordVisible ? "text" : "password"} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Password" className="w-full rounded-xl border border-green-100 bg-white px-4 py-3 pr-20 outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/15" />
+          <button
+            type="button"
+            onClick={() => setIsPasswordVisible((visible) => !visible)}
+            aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+            className="absolute inset-y-0 right-3 my-auto h-8 rounded-lg px-2 text-sm font-semibold text-green-700 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500/40"
+          >
+            {isPasswordVisible ? "Hide" : "Show"}
+          </button>
+        </div>
       </div>
       {error && <p className="mt-4 text-sm font-medium text-red-600">{error}</p>}
       <button disabled={isSubmitting} className="mt-6 w-full rounded-xl bg-gradient-to-r from-green-600 to-emerald-500 py-3 font-bold text-white shadow-lg shadow-green-700/25 disabled:cursor-not-allowed disabled:opacity-60">
