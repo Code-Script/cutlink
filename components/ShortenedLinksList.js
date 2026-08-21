@@ -20,9 +20,12 @@ const ShortenedLinksList = () => {
   }, []);
 
   useEffect(() => {
-    loadLinks();
+    const initialLoad = window.setTimeout(loadLinks, 0);
     window.addEventListener("short-link-generated", loadLinks);
-    return () => window.removeEventListener("short-link-generated", loadLinks);
+    return () => {
+      window.clearTimeout(initialLoad);
+      window.removeEventListener("short-link-generated", loadLinks);
+    };
   }, [loadLinks]);
 
   return (
