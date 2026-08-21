@@ -1,84 +1,15 @@
-"use client";
-import React, { useState } from "react";
-import Link from "next/link";
+import ShortenForm from "@/components/ShortenForm";
+import ShortenedLinksList from "@/components/ShortenedLinksList";
 
-const Page = () => {
-  const [url, seturl] = useState("");
-  const [shorturl, setshorturl] = useState("");
-  const [generated, setGenerated] = useState(false);
-
-  const generate = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-
-    const raw = JSON.stringify({
-      url: url,
-      shorturl: shorturl,
-    });
-
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    fetch("/api/generate", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setGenerated(`${process.env.NEXT_PUBLIC_HOST}/${shorturl}`);
-        seturl("");
-        setshorturl("");
-        console.log(result);
-        // alert(result.message);
-      })
-      .catch((error) => console.error(error));
-  };
-
+export default function ShortenPage() {
   return (
-    <div className="mx-auto max-w-xl bg-green-100 my-13 p-7 rounded-lg flex flex-col gap-4">
-      <h1 className="font-bold text-2xl">Generate your short URL</h1>
-      <div className="flex flex-col gap-3 ">
-        <input
-          className="px-3 py-2 focus:outline-green-500 bg-white rounded-md"
-          value={url}
-          type="text"
-          placeholder="Enter your URL"
-          onChange={(e) => {
-            seturl(e.target.value);
-          }}
-          id="url"
-        />
-        <input
-          className="px-3 py-2 focus:outline-green-500 bg-white rounded-md"
-          value={shorturl}
-          type="text"
-          placeholder="Enter your preferred short URL text"
-          onChange={(e) => {
-            setshorturl(e.target.value);
-          }}
-          id="shorturl"
-        />
-        <button
-          onClick={generate}
-          className="bg-green-500 shadow-lg rounded-lg p-3 py-1 font-bold text-white my-3"
-        >
-          Generate
-        </button>
-      </div>
-
-      {generated && (
-        <>
-          <span className="font-bold text-lg">Your Link</span>{" "}
-          <code>
-            <Link target="_blank" href={generated} className="text-blue-600 hover:underline">
-              {generated}
-            </Link>
-          </code>{" "}
-        </>
-      )}
-    </div>
+    <main className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-gradient-to-br from-emerald-50 via-green-50 to-teal-100 px-5 py-8 sm:px-8">
+      <div className="pointer-events-none absolute -left-24 top-12 h-72 w-72 rounded-full bg-emerald-300/30 blur-3xl" />
+      <div className="pointer-events-none absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-green-300/25 blur-3xl" />
+      <section className="relative z-10 mx-auto flex max-w-xl flex-col gap-6">
+        <ShortenForm />
+        <ShortenedLinksList />
+      </section>
+    </main>
   );
-};
-
-export default Page;
+}
