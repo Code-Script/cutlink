@@ -36,7 +36,7 @@ export default function Home() {
           </div>
         </section>
         <div className="relative hidden min-h-[400px] lg:flex lg:justify-start">
-          <Image priority src="/vector.png" fill alt="CutLink illustration" className="object-contain" />
+          <Image priority src="/vector.png" fill sizes="(min-width: 1024px) 50vw, 0px" alt="CutLink illustration" className="object-contain" />
         </div>
 
       </section>
