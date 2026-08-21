@@ -1,4 +1,5 @@
 import clientPromise from "@/lib/mongodb"
+import { getCurrentUser } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -6,6 +7,7 @@ export async function POST(request) {
     const client = await clientPromise;
     const db = client.db("cutlink")
     const collection = db.collection("url")
+    const user = await getCurrentUser()
 
     // check if short url exists
 
@@ -16,7 +18,8 @@ export async function POST(request) {
 
     const result = await collection.insertOne({
         url: body.url,
-        shorturl: body.shorturl
+        shorturl: body.shorturl,
+        ...(user && { userId: user._id }),
     })
     
 

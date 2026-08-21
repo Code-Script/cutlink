@@ -7,6 +7,7 @@ const ShortenForm = () => {
   const [url, seturl] = useState("");
   const [shorturl, setshorturl] = useState("");
   const [generated, setGenerated] = useState(false);
+  const [error, setError] = useState("");
 
   const generate = () => {
     const myHeaders = new Headers();
@@ -23,6 +24,11 @@ const ShortenForm = () => {
     fetch("/api/generate", requestOptions)
       .then((response) => response.json())
       .then((result) => {
+        if (!result.success) {
+          setError(result.message || "Unable to generate this link.");
+          return;
+        }
+        setError("");
         setGenerated(`${process.env.NEXT_PUBLIC_HOST}/${shorturl}`);
         seturl("");
         setshorturl("");
@@ -38,6 +44,8 @@ const ShortenForm = () => {
         <p className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-green-700">CutLink</p>
         <h1 className="text-2xl font-bold tracking-tight text-green-950">Generate your short URL</h1>
       </div>
+
+      {error && <p className="text-sm font-medium text-red-600">{error}</p>}
       <div className="flex flex-col gap-3">
         <input
           className="rounded-xl border border-green-100 bg-white/90 px-4 py-3 text-green-950 shadow-sm outline-none transition placeholder:text-gray-400 focus:border-green-500 focus:ring-4 focus:ring-green-500/15"
