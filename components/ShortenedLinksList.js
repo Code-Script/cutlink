@@ -6,12 +6,15 @@ import Link from "next/link";
 const ShortenedLinksList = () => {
   const [links, setLinks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
   const loadLinks = useCallback(async () => {
     try {
       const response = await fetch("/api/links");
       if (!response.ok) throw new Error("Unable to load links");
-      setLinks(await response.json());
+      const data = await response.json();
+      setUser(data.user);
+      setLinks(data.links);
     } catch (error) {
       console.error(error);
     } finally {
@@ -22,9 +25,11 @@ const ShortenedLinksList = () => {
   useEffect(() => {
     const initialLoad = window.setTimeout(loadLinks, 0);
     window.addEventListener("short-link-generated", loadLinks);
+    window.addEventListener("auth-changed", loadLinks);
     return () => {
       window.clearTimeout(initialLoad);
       window.removeEventListener("short-link-generated", loadLinks);
+      window.removeEventListener("auth-changed", loadLinks);
     };
   }, [loadLinks]);
 
@@ -37,6 +42,10 @@ const ShortenedLinksList = () => {
 
       {isLoading ? (
         <p className="mt-4 text-gray-600">Loading links...</p>
+      ) : !user ? (
+        <p className="mt-4 rounded-xl border border-dashed border-green-200 bg-green-50/80 p-4 text-sm leading-6 text-green-900">
+          <Link href="/signup" className="font-bold text-green-700 hover:underline">Sign up</Link> or <Link href="/login" className="font-bold text-green-700 hover:underline">log in</Link> to save shortlinks.
+        </p>
       ) : links.length === 0 ? (
         <p className="mt-4 text-gray-600">No shortened links yet.</p>
       ) : (
