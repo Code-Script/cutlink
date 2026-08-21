@@ -15,3 +15,25 @@ export async function GET() {
 
   return NextResponse.json({ user: publicUser(user), links });
 }
+
+export async function DELETE(request) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ message: "Authentication required" }, { status: 401 });
+
+  const { shorturl } = await request.json();
+  if (!shorturl) {
+    return NextResponse.json({ message: "Short URL is required" }, { status: 400 });
+  }
+
+  const client = await clientPromise;
+  const result = await client
+    .db("cutlink")
+    .collection("url")
+    .deleteOne({ shorturl, userId: user._id });
+
+  if (result.deletedCount === 0) {
+    return NextResponse.json({ message: "Short URL not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ success: true });
+}
